@@ -1,30 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
+use App\Services\Auth\AuthService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
+use function redirect;
 
 class RedirectIfAuthenticated
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next, string ...$guards): Response
-    {
-        $guards = empty($guards) ? [null] : $guards;
+	private AuthService $service;
 
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
-            }
-        }
-
-        return $next($request);
-    }
+	public function __construct(){
+		$this->service = new AuthService();
+	}
+	/**
+	 * Handle an incoming request.
+	 *
+	 * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+	 * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+	 */
+	public function handle(Request $request, Closure $next)
+	{
+		if($this->service->get($request) !== null) {
+			return redirect($request->query('auth_redirect', '/'));
+		}
+		return $next($request);
+	}
 }

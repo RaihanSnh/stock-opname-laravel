@@ -29,6 +29,15 @@ use Illuminate\Support\Facades\Hash;
  */
 class User extends Model
 {
+	const ROLE_REQUESTER = 'requester';
+	const ROLE_WAREHOUSE_STAFF = 'warehouse_staff';
+	const ROLE_ADMIN = 'admin';
+
+	const ROLES = [
+		self::ROLE_REQUESTER,
+		self::ROLE_WAREHOUSE_STAFF,
+		self::ROLE_ADMIN
+	];
 
 	protected $table = 'users';
 
@@ -38,6 +47,7 @@ class User extends Model
 
 	protected $fillable = [
 		'name',
+		'email',
 		'password',
 		'role'
 	];
@@ -50,6 +60,26 @@ class User extends Model
 	public function warehouse_staff()
 	{
 		return $this->hasOne(WarehouseStaff::class);
+	}
+
+	public function isPasswordValid(string $password) : bool{
+		return Hash::check($password, $this->password);
+	}
+
+	public function isRequester() : bool{
+		return $this->role === self::ROLE_REQUESTER;
+	}
+
+	public function isWarehouseStaff() : bool{
+		return $this->role === self::ROLE_WAREHOUSE_STAFF;
+	}
+
+	public function isAdmin() : bool{
+		return $this->role === self::ROLE_ADMIN;
+	}
+
+	public function setPassword(string $password) : string{
+		return $this->password = Hash::make($password);
 	}
 
 }
