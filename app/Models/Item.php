@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $description
  * @property int $total
  * @property string $series
+ * @property string $image
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -34,27 +35,26 @@ class Item extends Model
 	protected $casts = [
 		'warehouse_id' => 'int',
 		'detail_item_id' => 'int',
-		'status_id' => 'int'
 	];
 
 	protected $fillable = [
-		'warehouse_staff_ein',
-		'item_code',
-		'status_id'
+		'warehouse_id',
+		'detail_item_id',
+		'name',
+		'description',
+		'series',
+		'total',
+		'image',
 	];
 
-	public function warehouse_staff()
+	public function warehouse()
 	{
-		return $this->belongsTo(WarehouseStaff::class, 'warehouse_staff_ein', 'user_ein');
+		return $this->belongsTo(Warehouse::class);
 	}
 
-	public function items()
+	public function detail_item()
 	{
-		return $this->belongsTo(Items::class);
+		return $this->belongsTo(DetailItem::class);
 	}
 
-	public function status()
-	{
-		return $this->belongsTo(Status::class);
-	}
 }
