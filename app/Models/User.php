@@ -9,6 +9,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * Class User
@@ -27,8 +29,10 @@ use Illuminate\Support\Facades\Hash;
  *
  * @package App\Models
  */
-class User extends Model
+class User extends Authenticatable
 {
+	use HasApiTokens;
+
 	const ROLE_REQUESTER = 'requester';
 	const ROLE_WAREHOUSE_STAFF = 'warehouse_staff';
 	const ROLE_ADMIN = 'admin';
@@ -40,6 +44,7 @@ class User extends Model
 	];
 
 	protected $table = 'users';
+	protected $primaryKey = 'ein';	
 
 	protected $hidden = [
 		'password'
@@ -49,7 +54,7 @@ class User extends Model
 		'name',
 		'email',
 		'password',
-		'role'
+		'role',
 	];
 
 	public function requester()

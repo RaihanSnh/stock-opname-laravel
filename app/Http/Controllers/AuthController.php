@@ -5,59 +5,39 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
-
-use function auth;
-use function redirect;
-use function response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-	private AuthService $service;
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-	public function __construct()
-	{
-		$this->service = new AuthService();
-	}
+        $email = $request->input('email');
+        $password = $request->input('password');
 
-	public function login(Request $request)
-	{
-		$request->validate([
-			'email' => 'required',
-			'password' => 'required'
-		]);
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+			$user = Auth::user();
+            $token = $user->createToken('API Token')->plainTextToken;
 
-		$email = $request->post('email');
-		$password = $request->post('password');
+            return response()->json([
+                'user' => $user,
+				'token' => $token
+            ]);
+        }
 
-		/** @var User $user */
-		$user = User::query()->where('email', '=', $email)->first();
-		if ($user === null || !$user->isPasswordValid($password)) {
-			$request->session()->flash('login_error', 'Invalid email or password');
-			return response()->view('pages.auth.login', [], 401);
-		}
-		$this->service->set($request, $user);
+        return response()->json(['error' => 'Invalid email or password'], 401);
+    }
 
-		if ($user->isAdmin()) {
-			return redirect('/dashboard/admin');
-		}
+    public function logout(Request $request): JsonResponse
+    {
+        Auth::logout();
 
-		if ($user->isWarehouseStaff()) {
-			return redirect('/dashboard/petugas');
-		}
-
-		// Redirect Requester
-		return redirect('/dashboard/pemohon');
-	}
-
-	public function logout(Request $request)
-	{
-		auth()->logout();
-
-		$request->session()->invalidate();
-		$request->session()->regenerateToken();
-
-		return redirect('/');
-	}
+        return response()->json(['message' => 'Logged out']);
+    }
 }
