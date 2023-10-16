@@ -38,7 +38,7 @@ class ItemService{
 			]);
 	}
 
-    public function delete(Warehouse|int $warehouse) {
-		Warehouse::query()->find($warehouse instanceof Warehouse ? $warehouse->id : $warehouse)->delete();
+    public function delete(Item|int $item) {
+		Item::query()->find($item instanceof Item ? $item->id : $item)->delete();
 	}
 }
