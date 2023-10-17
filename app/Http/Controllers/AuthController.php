@@ -28,11 +28,17 @@ class AuthController extends Controller
             return response()->json([
                 'user' => $user,
 				'token' => $token
-            ]);
+            ],201);
         }
 
         return response()->json(['error' => 'Invalid email or password'], 401);
     }
+
+	public function getRole() {
+		$user = User::all('role');
+
+		return response()->json($user);
+	}
 
     public function logout(Request $request): JsonResponse
     {

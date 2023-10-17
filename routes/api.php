@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\OnlyAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +24,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('/auth')->group(function() {
-	Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
-	Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
-	Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
+	Route::post('/login', [AuthController::class, 'login']);
+	Route::post('/logout', [AuthController::class, 'logout']);
+	Route::get('/logout', [AuthController::class, 'logout']);
 });
+
+Route::prefix('/admin')
+    ->group(function () {
+        Route::post('/unit', [UnitController::class, 'store']);
+    });

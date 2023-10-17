@@ -27,7 +27,7 @@ class Authenticate
 	{
 		$user = $this->service->get($request);
 		if($user === null) {
-			return redirect('/');
+			return redirect('auth/login');
 		}
 		$request->setUserResolver(fn() => $user);
 		return $next($request);

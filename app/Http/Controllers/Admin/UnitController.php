@@ -8,19 +8,33 @@ use App\Http\Controllers\Controller;
 use App\Models\Unit;
 use App\Services\Admin\UnitService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 use function back;
 
 class UnitController extends Controller{
 
-	public function create(Request $request) {
-		$request->validate([
-			'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
-		]);
+	// public function create(Request $request) {
+	// 	$request->validate([
+	// 		'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
+	// 	]);
 
-		UnitService::getInstance()->create($request->post('name'));
-		$request->session()->flash('message', 'Unit created.');
-		return back();
-	}
+	// 	UnitService::getInstance()->create($request->post('name'));
+	// 	$request->session()->flash('message', 'Unit created.');
+	// 	return back();
+	// }
+
+	public function store(Request $request) {
+		$request->validate([
+            'name' => 'required|string|regex:/^[a-zA-Z\s]*$/',
+        ]);
+
+		$name = $request->input('name');
+	
+		UnitService::getInstance()->create($name);
+	
+		return response()->json(['message' => 'Unit created.'], 201);
+	}	
 
 	public function update(Unit $unit, Request $request) {
 		$request->validate([
