@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Item;
+use App\Models\Report;
 use App\Services\Admin\ItemService;
 use Illuminate\Http\Request;
 use function back;
@@ -30,6 +31,8 @@ class ItemController{
 			(int) $request->get('detail_item_id'),
 			'in'
 		);
+
+		Report
 		$request->session()->flash('message', 'Item added');
 		return back();
 	}
