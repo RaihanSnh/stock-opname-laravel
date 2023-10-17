@@ -17,7 +17,7 @@ class ItemController{
 			'description' => 'required',
 			'series' => 'required',
 			'total' => 'required',
-			'image' => 'required|mimes:png,jpg',
+			'image' => 'required|mimes:png,jpg'
 		]);
 
 		ItemService::getInstance()->create(
@@ -28,6 +28,7 @@ class ItemController{
 			$request->post('total'),
 			$request->post('image'),
 			(int) $request->get('detail_item_id'),
+			'in'
 		);
 		$request->session()->flash('message', 'Item added');
 		return back();
@@ -50,7 +51,7 @@ class ItemController{
 			$request->post('series'),
 			$request->post('total'),
 			$request->post('image'),
-			(int) $request->get('detail_item_id'),
+			(int) $request->get('detail_item_id')
 		);
 		$request->session()->flash('message', 'Item added');
 		return back();
@@ -62,4 +63,21 @@ class ItemController{
 		$request->session()->flash('message', 'Item deleted');
 		return back();
 	}
+
+	public function give(Item $item, Request $request) {
+		ItemService::getInstance()->update(
+			$item,
+			$item->name,
+			(int) $item->warehouse_id,
+			$item->description,
+			$item->series,
+			$item->total,
+			$item->image,
+			(int) $item->detail_item_id,
+			'out'
+		);
+		$request->session()->flash('message', 'Item given to requester');
+		return back();
+	}
+	
 }
