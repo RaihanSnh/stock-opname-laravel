@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::table('items', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('items', function (Blueprint $table) {
+            $table->enum('status', ['in', 'out']);
+        });
     }
 };
