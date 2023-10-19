@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -23,13 +25,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('/auth')->group(function() {
-	Route::post('/login', [AuthController::class, 'login']);
-	Route::post('/logout', [AuthController::class, 'logout']);
-	Route::get('/logout', [AuthController::class, 'logout']);
+Route::prefix('/auth')->middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('user', [AuthController::class, 'getUser']);
 });
 
 Route::prefix('/admin')
     ->group(function () {
-        Route::post('/unit', [UnitController::class, 'store']);
+        Route::get('/', [HomeController::class, 'admin']);
+        Route::get('/unit', [UnitController::class, 'unit']);
+        Route::post('/unit', [UnitController::class, 'create']);
+        Route::get('/category', [CategoryController::class, 'category']);
+        Route::post('/category', [CategoryController::class, 'create']);
+        Route::post('/item', [ItemController::class, 'create']);
     });
+
+Route::post('/auth/login', [AuthController::class, 'login']);

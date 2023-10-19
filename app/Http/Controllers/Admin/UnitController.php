@@ -13,18 +13,13 @@ use Illuminate\Support\Facades\Validator;
 use function back;
 
 class UnitController extends Controller{
+	public function Unit() {
+		$unit = Unit::all();
 
-	// public function create(Request $request) {
-	// 	$request->validate([
-	// 		'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
-	// 	]);
-
-	// 	UnitService::getInstance()->create($request->post('name'));
-	// 	$request->session()->flash('message', 'Unit created.');
-	// 	return back();
-	// }
-
-	public function store(Request $request) {
+		return response()->json($unit);
+	}
+	
+	public function create(Request $request) {
 		$request->validate([
             'name' => 'required|string|regex:/^[a-zA-Z\s]*$/',
         ]);
@@ -34,7 +29,7 @@ class UnitController extends Controller{
 		UnitService::getInstance()->create($name);
 	
 		return response()->json(['message' => 'Unit created.'], 201);
-	}	
+	}
 
 	public function update(Unit $unit, Request $request) {
 		$request->validate([
