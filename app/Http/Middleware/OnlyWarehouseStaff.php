@@ -10,7 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use function response;
 
-class OnlyTeacher
+class OnlyWarehouseStaff
 {
 	/**
 	 * Handle an incoming request.

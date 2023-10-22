@@ -18,11 +18,11 @@ class AuthSession{
 	}
 
 	public function getUserEin() : int{
-		return $this->userId;
+		return $this->userEin;
 	}
 
-	public function getName() : string{
-		return $this->name;
+	public function getEmail() : string{
+		return $this->email;
 	}
 
 	public function getRole() : string{
@@ -33,6 +33,6 @@ class AuthSession{
 		if($this->model !== null) {
 			return $this->model;
 		}
-		return $this->model = User::query()->find($this->userId);
+		return $this->model = User::query()->find($this->userEin);
 	}
 }
