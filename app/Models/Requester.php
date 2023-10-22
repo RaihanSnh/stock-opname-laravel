@@ -30,10 +30,6 @@ class Requester extends Model
 		'user_ein' => 'int'
 	];
 
-	protected $fillable = [
-		'name'
-	];
-
 	public function user()
 	{
 		return $this->belongsTo(User::class);
