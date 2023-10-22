@@ -12,14 +12,22 @@ use function back;
 
 class CategoryController extends Controller{
 
+	public function category() {
+		$category = Category::all();
+
+		return response()->json($category);
+	}
+
 	public function create(Request $request) {
 		$request->validate([
 			'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
 		]);
 
-		CategoryService::getInstance()->create($request->post('name'));
-		$request->session()->flash('message', 'Category created.');
-		return back();
+		$name = $request->input('name');
+	
+		CategoryService::getInstance()->create($name);
+	
+		return response()->json(['message' => 'Category created.'], 201);
 	}
 
 	public function update(Category $category, Request $request) {
