@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\DetailItem;
 use App\Models\Item;
+use App\Models\Report;
 use App\Services\Admin\ItemService;
 use Illuminate\Http\Request;
 use function back;
@@ -40,11 +41,11 @@ class ItemController{
 
 	public function create(Request $request) {
 		$request->validate([
-			'name' => 'required|string',
-			'description' => 'required|string',
-			'series' => 'required|string',
-			'total' => 'required|integer',
-			// 'image' => 'required|mimes:png,jpg',
+			'name' => 'required',
+			'description' => 'required',
+			'series' => 'required',
+			'total' => 'required',
+			'image' => 'required|mimes:png,jpg',
 		]);
 
 		$no = 1;
@@ -63,11 +64,10 @@ class ItemController{
 		ItemService::getInstance()->create(
 			$data,
 			(int) $request->get('detail_item_id'),
+			'in'
 		);
-
-		$detailItem = DetailItem::all();
-			
-		return response()->json($detailItem, ['message' => 'Item created.']);
+		$request->session()->flash('message', 'Item added');
+		return back();
 	}
 
 	public function update(Item $item, Request $request) {
@@ -87,7 +87,7 @@ class ItemController{
 			$request->post('series'),
 			$request->post('total'),
 			$request->post('image'),
-			(int) $request->get('detail_item_id'),
+			(int) $request->get('detail_item_id')
 		);
 		$request->session()->flash('message', 'Item added');
 		return back();
@@ -99,4 +99,21 @@ class ItemController{
 		$request->session()->flash('message', 'Item deleted');
 		return back();
 	}
+
+	public function give(Item $item, Request $request) {
+		ItemService::getInstance()->update(
+			$item,
+			$item->name,
+			(int) $item->warehouse_id,
+			$item->description,
+			$item->series,
+			$item->total,
+			$item->image,
+			(int) $item->detail_item_id,
+			'out'
+		);
+		$request->session()->flash('message', 'Item given to requester');
+		return back();
+	}
+	
 }
