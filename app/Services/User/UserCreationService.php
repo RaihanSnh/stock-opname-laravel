@@ -47,17 +47,12 @@ class UserCreationService
 
 		$warehouse_staff->save();
 	}
-
-	// public function createAdmin(string $username, string $email, string $password, ?UploadedFile $image) : void
-	// {
-	// 	$this->create($username, $password, $email, User::ROLE_ADMIN);
-	// }
-
+ 
 	public function createAdmin(string $username, string $email, string $password, ?string $imagePath = null) : void
 	{
 		$user = $this->create($username, $password, $email, User::ROLE_ADMIN);
 	
-		if ($imagePath !== null) {
+		if ($imagePath !== null && file_exists($imagePath)) {
 			$image = new UploadedFile($imagePath, basename($imagePath));
 			$fileName = Str::random(16) . '.' . $image->extension();
 			$image->move(public_path('images/admin'), $fileName);
@@ -67,19 +62,6 @@ class UserCreationService
 		}
 		$user->save();
 	}
-	
-	// public function createAdmin(string $username, string $email, string $password, ?UploadedFile $image) : void
-	// {
-	// 	$user = $this->create($username, $password, $email, User::ROLE_ADMIN);
-	
-	// 	if($image !== null){
-	// 		$image->move(public_path('images/admin'), $fileName = Str::random(16) . '.' . $image->extension());
-	// 		$user->image = $fileName;
-	// 	}
-	
-	// 	$user->save();
-	// }
-	
 
 	private function create(string $username, string $password, string $email, string $role, ?string $image = null) : User
 	{
