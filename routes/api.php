@@ -27,16 +27,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('/auth')->middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('user', [AuthController::class, 'getUser']);
+    Route::get('getuser', [AuthController::class, 'getUser']);
 });
 
 Route::prefix('/admin')
     ->group(function () {
         Route::get('/', [HomeController::class, 'admin']);
+        // Unit
         Route::get('/unit', [UnitController::class, 'unit']);
         Route::post('/unit', [UnitController::class, 'create']);
+        Route::get('/unit/{id}', [UnitController::class, 'view']);
+        Route::post('/unit/update/{id}', [UnitController::class, 'update']);
+        Route::delete('/unit/delete/{id}', [UnitController::class, 'delete']);
+        // Category
         Route::get('/category', [CategoryController::class, 'category']);
         Route::post('/category', [CategoryController::class, 'create']);
+        Route::get('/category/{id}', [CategoryController::class, 'view']);
+        Route::post('/category/update/{id}', [CategoryController::class, 'update']);
+        Route::delete('/category/delete/{id}', [CategoryController::class, 'delete']);
+        // Item
         Route::post('/item', [ItemController::class, 'create']);
     });
 

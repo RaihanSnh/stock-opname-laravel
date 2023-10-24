@@ -17,11 +17,14 @@ class UnitService{
 		$unit->save();
 	}
 
-	public function delete(Unit|int $unit) {
-		Unit::query()->find($unit instanceof Unit ? $unit->id : $unit)->delete();
+	public function update(string $id, string $name) {
+		$unit = Unit::find($id);
+		$unit->name = $name;
+		$unit->save();
 	}
 
-	public function update(Unit|int $unit, string $name) {
-		Unit::query()->find($unit instanceof Unit ? $unit->id : $unit)->update(['name' => $name]);
+	public function delete(string $id) {
+		$unit = Unit::find($id);
+		$unit->delete();
 	}
 }

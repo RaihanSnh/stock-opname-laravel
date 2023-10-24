@@ -31,22 +31,28 @@ class UnitController extends Controller{
 		return response()->json(['message' => 'Unit created.'], 201);
 	}
 
-	public function update(Unit $unit, Request $request) {
+	public function view($id) {
+		$unit = Unit::find($id);
+
+		return response()->json(['unit' => $unit]);
+	}
+
+	public function update($id, Request $request) {
 		$request->validate([
 			'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
 		]);
 
-		UnitService::getInstance()->update($unit, $request->post('name'));
+		$name = $request->input('name');
 
-		$request->session()->flash('message', 'Unit updated.');
-		return back();
+		UnitService::getInstance()->update($id, $name);
+
+		return response()->json(['message' => 'Unit updated.'], 201);
 	}
 
-	public function delete(Unit $unit, Request $request) {
-		UnitService::getInstance()->delete($unit);
+	public function delete($id) {
+		UnitService::getInstance()->delete($id);
 
-		$request->session()->flash('message', 'Unit deleted.');
-		return back();
+		return response()->json(['message' => 'Unit Deleted.'], 201);
 	}
 
 }

@@ -17,11 +17,14 @@ class CategoryService{
 		$category->save();
 	}
 
-	public function delete(Category|int $category) {
-		Category::query()->find($category instanceof Category ? $category->id : $category)->delete();
+	public function update(string $id, string $name) {
+		$category = Category::find($id);
+		$category->name = $name;
+		$category->save();
 	}
 
-	public function update(Category|int $category, string $name) {
-		Category::query()->find($category instanceof Category ? $category->id : $category)->update(['name' => $name]);
+	public function delete(string $id) {
+		$category = Category::find($id);
+		$category->delete();
 	}
 }

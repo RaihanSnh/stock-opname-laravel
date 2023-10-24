@@ -30,22 +30,28 @@ class CategoryController extends Controller{
 		return response()->json(['message' => 'Category created.'], 201);
 	}
 
-	public function update(Category $category, Request $request) {
+	public function view($id) {
+		$category = Category::find($id);
+
+		return response()->json(['category' => $category]);
+	}
+
+	public function update($id, Request $request) {
 		$request->validate([
 			'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
 		]);
 
-		CategoryService::getInstance()->update($category, $request->post('name'));
+		$name = $request->input('name');
 
-		$request->session()->flash('message', 'Category updated.');
-		return back();
+		CategoryService::getInstance()->update($id, $name);
+
+		return response()->json(['message' => 'Category updated.'], 201);
 	}
 
-	public function delete(Category $category, Request $request) {
-		CategoryService::getInstance()->delete($category);
+	public function delete($id) {
+		CategoryService::getInstance()->delete($id);
 
-		$request->session()->flash('message', 'Category deleted.');
-		return back();
+		return response()->json(['message' => 'Category Deleted.'], 201);
 	}
 
 }
