@@ -18,12 +18,18 @@ class UserCreationService
 
 	use SingletonTrait;
 
-	public function createRequester(string $username, string $email, string $password, ?UploadedFile $image) : void
+	public function createRequester(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
 	{
-		$user = $this->create($username, $password, $email, User::ROLE_REQUESTER);
+
+		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
+		if ($date_of_birth !== false) {
+			$date_of_birth = $date_of_birth->format('Y-m-d');
+		}
+
+		$user = $this->create($username, $password, $email, $image, $date_of_birth, $ein, User::ROLE_REQUESTER);
 
 		$requester = new Requester();
-		$requester->user_ein = $user->ein;
+		$requester->user_id = $user->id;
 
 		if($image !== null){
 			$image->move(public_path('images/requester'), $fileName = Str::random(16) . '.' . $image->extension());
@@ -33,12 +39,18 @@ class UserCreationService
 		$requester->save();
 	}
 
-	public function createWarehouseStaff(string $username, string $email, string $password, ?UploadedFile $image) : void
+	public function createWarehouseStaff(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
 	{
-		$user = $this->create($username, $password, $email, User::ROLE_WAREHOUSE_STAFF);
+
+		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
+		if ($date_of_birth !== false) {
+			$date_of_birth = $date_of_birth->format('Y-m-d');
+		}
+
+		$user = $this->create($username, $password, $email, $image, $date_of_birth, $ein, User::ROLE_WAREHOUSE_STAFF);
 
 		$warehouse_staff = new WarehouseStaff();
-		$warehouse_staff->user_ein = $user->ein;
+		$warehouse_staff->user_id = $user->id;
 
 		if($image !== null){
 			$image->move(public_path('images/warehouse_staff'), $fileName = Str::random(16) . '.' . $image->extension());
@@ -48,10 +60,16 @@ class UserCreationService
 		$warehouse_staff->save();
 	}
  
-	public function createAdmin(string $username, string $email, string $password, ?string $imagePath = null) : void
+	public function createAdmin(string $username, string $email, string $password, ?string $imagePath = null, string $date_of_birth, string $ein) : void
 	{
-		$user = $this->create($username, $password, $email, User::ROLE_ADMIN);
-	
+
+		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
+        if ($date_of_birth !== false) {
+            $date_of_birth = $date_of_birth->format('Y-m-d');
+        }
+
+		$user = $this->create($username, $password, $email, User::ROLE_ADMIN, $imagePath, $date_of_birth, $ein);
+
 		if ($imagePath !== null && file_exists($imagePath)) {
 			$image = new UploadedFile($imagePath, basename($imagePath));
 			$fileName = Str::random(16) . '.' . $image->extension();
@@ -63,7 +81,7 @@ class UserCreationService
 		$user->save();
 	}
 
-	private function create(string $username, string $password, string $email, string $role, ?string $image = null) : User
+	private function create(string $username, string $password, string $email, string $role, ?string $image = null, string $date_of_birth, string $ein) : User
 	{
 		$user = new User();
 		$user->name = $username;
@@ -71,43 +89,57 @@ class UserCreationService
 		$user->setPassword($password);
 		$user->role = $role;
 		$user->image = 'default.jpg';
+		$user->date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
+		$user->ein = $ein; //gender belum
 
 		$user->save();
 		return $user;
 	}
 
-	public function updateRequester(Requester|int $requester, string $username, string $email, string $password, ?UploadedFile $image) : void
+	public function updateRequester(Requester|int $requester, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
 	{
-		$user = $this->update($requester, $username, $email, $password, User::ROLE_REQUESTER, $image);
+		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
+        if ($date_of_birth !== false) {
+            $date_of_birth = $date_of_birth->format('Y-m-d');
+        }
 
-		Requester::query()->find($requester instanceof Requester ? $requester->user_ein : $requester)
+		$user = $this->update($requester, $username, $email, $password, User::ROLE_REQUESTER, $image, $date_of_birth, $ein);
+
+		Requester::query()->find($requester instanceof Requester ? $requester->user_id : $requester)
 			->update([
-				'user_ein' => $user->ein,
+				'user_id' => $user->id,
 			]);
 	}
 
-	public function updateWarehouseStaff(WarehouseStaff|int $warehouse_staff, string $username, string $email, string $password, ?UploadedFile $image) : void
+	public function updateWarehouseStaff(WarehouseStaff|int $warehouse_staff, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
 	{
-		$user = $this->update($warehouse_staff, $username, $email, $password, User::ROLE_WAREHOUSE_STAFF, $image);
+		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
+        if ($date_of_birth !== false) {
+            $date_of_birth = $date_of_birth->format('Y-m-d');
+        }
 
-		WarehouseStaff::query()->find($warehouse_staff instanceof WarehouseStaff ? $warehouse_staff->user_ein : $warehouse_staff)
+		$user = $this->update($warehouse_staff, $username, $email, $password, User::ROLE_WAREHOUSE_STAFF, $image, $date_of_birth, $ein);
+
+		WarehouseStaff::query()->find($warehouse_staff instanceof WarehouseStaff ? $warehouse_staff->user_id : $warehouse_staff)
 			->update([
-				'user_ein' => $user->ein
+				'user_id' => $user->id
 			]);
 	}
 
-	private function update(User|int $user, string $username, string $email, string $password, string $role, $image) : User
+	private function update(User|int $user, string $username, string $email, string $password, string $role, ?UploadedFile $image, string $date_of_birth, string $ein) : User
 	{
 		$update = [
 			'name' => $username,
             'email' => $email,
 			'role' => $role,
-			'image' => $image
+			'image' => $image, //idk kalau image gni apa ngga
+			'date_of_birth' => $date_of_birth,
+			'ein' => $ein
 		];
 		if($password !== "") {
 			$update['password'] = Hash::make($password);
 		}
-		User::query()->find($user instanceof User ? $user->ein : $user)->update($update);
+		User::query()->find($user instanceof User ? $user->id : $user)->update($update);
 		if(!$user instanceof User) {
 			/** @var User $ret */
 			$ret = User::query()->find($user);

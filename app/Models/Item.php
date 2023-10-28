@@ -12,19 +12,22 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Item
  *
- * @property int $code
+ * @property int $id
  * @property int $warehouse_id
- * @property int $detail_item_id
  * @property string $name
  * @property string $description
- * @property int $total
+ * @property string total
  * @property string $series
  * @property string $image
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int $category_id
+ * @property int $unit_id
+ * @property string code
  *
  * @property Warehouse $warehouse
- * @property DetailItem $detail_item
+ * @property Category $category
+ * @property Unit $unit
  *
  * @package App\Models
  */
@@ -34,17 +37,20 @@ class Item extends Model
 
 	protected $casts = [
 		'warehouse_id' => 'int',
-		'detail_item_id' => 'int',
+		'category_id' => 'int',
+		'unit_id' => 'int'
 	];
 
 	protected $fillable = [
 		'warehouse_id',
-		'detail_item_id',
+		'category_id',
+		'unit_id',
 		'name',
 		'description',
 		'series',
 		'total',
 		'image',
+		'code'
 	];
 
 	public function warehouse()
@@ -52,9 +58,13 @@ class Item extends Model
 		return $this->belongsTo(Warehouse::class);
 	}
 
-	public function detail_item()
+	public function category()
 	{
-		return $this->belongsTo(DetailItem::class);
+		return $this->belongsTo(Category::class);
 	}
 
+	public function unit()
+	{
+		return $this->belongsTo(Unit::class);
+	}
 }
