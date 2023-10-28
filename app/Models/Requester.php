@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class Requester
  *
- * @property int $user_ein
+ * @property int $user_id
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -24,10 +24,10 @@ use Illuminate\Database\Eloquent\Model;
 class Requester extends Model
 {
 	protected $table = 'requester';
-	protected $primaryKey = 'user_ein';
+	protected $primaryKey = 'user_id';
 
 	protected $casts = [
-		'user_ein' => 'int'
+		'user_id' => 'int'
 	];
 
 	public function user()

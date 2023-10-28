@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use date;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * Class User
  *
- * @property int $ein
+ * @property int $id
  * @property string $name
  * @property string $email
  * @property string $password
@@ -23,6 +24,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $updated_at
  * @property string $role
  * @property string $image
+ * @property string $date_of_birth
+ * @property string $ein
  *
  * @property Requester $requester
  * @property WarehouseStaff $warehouse_staff
@@ -44,7 +47,6 @@ class User extends Authenticatable
 	];
 
 	protected $table = 'users';
-	protected $primaryKey = 'ein';	
 
 	protected $hidden = [
 		'password'
@@ -55,6 +57,11 @@ class User extends Authenticatable
 		'email',
 		'password',
 		'role',
+		'image',
+		'date_of_birth',
+		'ein'
+		//gender
+
 	];
 
 	public function requester()

@@ -13,14 +13,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class Report
  *
  * @property int $id
- * @property int $warehouse_staff_ein
- * @property int $item_code
- * @property int $status_id
+ * @property int $warehouse_staff_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int $reports_in_id
+ * @property int $reports_out_id
  *
  * @property WarehouseStaff $warehouse_staff
- * @property Item $item
+ * @property Reportin $reports_in
+ * @property ReportOut $reports_out
  *
  * @package App\Models
  */
@@ -29,15 +30,15 @@ class Report extends Model
 	protected $table = 'reports';
 
 	protected $casts = [
-		'warehouse_staff_ein' => 'int',
-		'item_code' => 'int',
-		'status_id' => 'int'
+		'warehouse_staff_id' => 'int',
+		'reports_in_id' => 'int',
+		'reports_out_id' => 'int'
 	];
 
 	protected $fillable = [
 		'warehouse_staff_ein',
-		'item_code',
-		'status_id'
+		'reports_in_id',
+		'reports_out_id'
 	];
 
 	public function warehouse_staff()
@@ -45,13 +46,13 @@ class Report extends Model
 		return $this->belongsTo(WarehouseStaff::class, 'warehouse_staff_ein', 'user_ein');
 	}
 
-	public function items()
+	public function reports_in()
 	{
-		return $this->belongsTo(Items::class);
+		return $this->belongsTo(ReportIn::class);
 	}
 
-	public function status()
+	public function reports_out()
 	{
-		return $this->belongsTo(Status::class);
+		return $this->belongsTo(ReportOut::class);
 	}
 }

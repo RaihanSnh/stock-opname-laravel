@@ -16,15 +16,19 @@ class UserCreationController extends Controller{
 			'username' => 'required|regex:/^[a-zA-Z\s]*$/',
             'email' => 'required|regex:/^[a-zA-Z\s]*$/',
 			'password' => 'required',
-			'image' => 'nullable|mimes:png,jpg'
+			'image' => 'nullable|mimes:png,jpg',
+			'date_of_birth' => 'required',//ganti lg nnti
+			'ein' => 'required'//TODO : pikirin ein d-o-b sama gender
 		]);
 
 		$username = $request->post('username');
         $email = $request->post('email');
 		$password = $request->post('password');
 		$image = $request->post('image');
+		$date_of_birth = $request->post('date_of_birth');
+		$ein = $request->post('ein');
 
-		UserCreationService::getInstance()->createAdmin($username, $email, $password, $image);
+		UserCreationService::getInstance()->createAdmin($username, $email, $password, $image, $date_of_birth, $ein);
 
 		$request->session()->flash('message', 'Admin created.');
 		return back();
@@ -42,7 +46,8 @@ class UserCreationController extends Controller{
 			$request->post('username'),
             $request->post('email'),
 			$request->post('password'),
-			$request->file('image')
+			$request->file('image'),
+
 		);
 
 		$request->session()->flash('message', 'Warehouse Staff created.');
