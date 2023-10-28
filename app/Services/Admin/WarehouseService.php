@@ -12,16 +12,19 @@ class WarehouseService{
 	use SingletonTrait;
 
 	public function create(string $name) {
-		$major = new Warehouse();
-		$major->name = $name;
-		$major->save();
+		$warehouse = new Warehouse();
+		$warehouse->name = $name;
+		$warehouse->save();
 	}
 
-	public function delete(Warehouse|int $warehouse) {
-		Warehouse::query()->find($warehouse instanceof Warehouse ? $warehouse->id : $warehouse)->delete();
+	public function update(string $id, string $name) {
+		$warehouse = Warehouse::find($id);
+		$warehouse->name = $name;
+		$warehouse->save();
 	}
 
-	public function update(Warehouse|int $warehouse, string $name) {
-		Warehouse::query()->find($warehouse instanceof Warehouse ? $warehouse->id : $warehouse)->update(['name' => $name]);
+	public function delete(string $id) {
+		$warehouse = Warehouse::find($id);
+		$warehouse->delete();
 	}
 }

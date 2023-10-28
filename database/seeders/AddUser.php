@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Requester;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,10 +16,17 @@ class AddUser extends Seeder
     public function run(): void
     {
         User::insert([
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
+            'ein' => '0003',
+            'name' => 'Usman',
+            'email' => 'usman@gmail.com',
             'password' => Hash::make('admin123'),
-            'role' => 'admin'
+            'role' => 'requester',
+            'image' => 'default.jpg'
+        ]);
+
+        Requester::insert([
+            'user_ein' => '0003',
+            'name' => 'Usman',
         ]);
     }
 }

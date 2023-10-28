@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\Authenticate;
@@ -33,6 +34,8 @@ Route::prefix('/auth')->middleware('auth:sanctum')->group(function () {
 Route::prefix('/admin')
     ->group(function () {
         Route::get('/', [HomeController::class, 'admin']);
+        //User
+        Route::get('/user', [HomeController::class, 'user']);
         // Unit
         Route::get('/unit', [UnitController::class, 'unit']);
         Route::post('/unit', [UnitController::class, 'create']);
@@ -45,8 +48,18 @@ Route::prefix('/admin')
         Route::get('/category/{id}', [CategoryController::class, 'view']);
         Route::post('/category/update/{id}', [CategoryController::class, 'update']);
         Route::delete('/category/delete/{id}', [CategoryController::class, 'delete']);
+        // Warehouse
+        Route::get('/warehouse', [WarehouseController::class, 'warehouse']);
+        Route::post('/warehouse', [WarehouseController::class, 'create']);
+        Route::get('/warehouse/{id}', [WarehouseController::class, 'view']);
+        Route::post('/warehouse/update/{id}', [WarehouseController::class, 'update']);
+        Route::delete('/warehouse/delete/{id}', [WarehouseController::class, 'delete']);
         // Item
         Route::post('/item', [ItemController::class, 'create']);
+        Route::get('/item/{id}', [ItemController::class, 'view']);
+        Route::post('/item/update/{id}', [ItemController::class, 'update']);
+        Route::delete('/item/delete/{id}', [ItemController::class, 'delete']);
+        
     });
 
 Route::post('/auth/login', [AuthController::class, 'login']);

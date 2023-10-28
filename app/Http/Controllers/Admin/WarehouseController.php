@@ -11,33 +11,46 @@ use Illuminate\Http\Request;
 use function back;
 
 class WarehouseController extends Controller{
+	public function warehouse() {
+		$warehouse = Warehouse::all();
+
+		return response()->json($warehouse);
+	}
 
 	public function create(Request $request) {
 		$request->validate([
-			'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
-		]);
+            'name' => 'required|string|regex:/^[a-zA-Z\s]*$/',
+        ]);
 
-		WarehouseService::getInstance()->create($request->post('name'));
-		$request->session()->flash('message', 'Warehouse created.');
-		return back();
+		$name = $request->input('name');
+	
+		WarehouseService::getInstance()->create($name);
+	
+		return response()->json(['message' => 'Warehouse created.'], 201);
 	}
 
-	public function update(Warehouse $warehouse, Request $request) {
+	public function view($id) {
+		$warehouse = Warehouse::find($id);
+
+		return response()->json(['warehouse' => $warehouse]);
+	}
+
+	public function update($id, Request $request) {
 		$request->validate([
 			'name' => 'required|string|regex:/^[a-zA-Z\s]*$/'
 		]);
 
-		WarehouseService::getInstance()->update($warehouse, $request->post('name'));
+		$name = $request->input('name');
 
-		$request->session()->flash('message', 'Warehouse updated.');
-		return back();
+		WarehouseService::getInstance()->update($id, $name);
+
+		return response()->json(['message' => 'Warehouse updated.'], 201);
 	}
 
-	public function delete(Warehouse $warehouse, Request $request) {
-		WarehouseService::getInstance()->delete($warehouse);
+	public function delete($id) {
+		WarehouseService::getInstance()->delete($id);
 
-		$request->session()->flash('message', 'Warehouse deleted.');
-		return back();
+		return response()->json(['message' => 'Warehouse Deleted.'], 201);
 	}
 
 }

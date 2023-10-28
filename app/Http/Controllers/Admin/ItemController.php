@@ -48,24 +48,18 @@ class ItemController{
 			'image' => 'required|mimes:png,jpg',
 		]);
 
-		$no = 1;
-		$code = 'ABC' . str_pad($no, 3, '0', STR_PAD_LEFT);
-
 		$data = [
-			'code' => $code,
+			'code' => $request->input('code'),
 			'name' => $request->input('name'),
 			'description' => $request->input('description'),
 			'series' => $request->input('series'),
 			'total' => $request->input('total'),
-			'iddetail' => $request,
-			'image' => $request->input('image')
+			'image' => $request->input('image'),
+			'idcategory' => $request->input('idcategory'),
+			'idunit' => $request->input('idunit'),
 		];
 
-		ItemService::getInstance()->create(
-			$data,
-			(int) $request->get('detail_item_id'),
-			'in'
-		);
+		ItemService::getInstance()->create($data);
 		$request->session()->flash('message', 'Item added');
 		return back();
 	}
