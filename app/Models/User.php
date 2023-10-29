@@ -7,7 +7,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use date;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -26,6 +25,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $image
  * @property string $date_of_birth
  * @property string $ein
+ * @property string $gender
  *
  * @property Requester $requester
  * @property WarehouseStaff $warehouse_staff
@@ -59,8 +59,8 @@ class User extends Authenticatable
 		'role',
 		'image',
 		'date_of_birth',
-		'ein'
-		//gender
+		'ein',
+		'gender'
 
 	];
 
@@ -93,5 +93,4 @@ class User extends Authenticatable
 	public function setPassword(string $password) : string{
 		return $this->password = Hash::make($password);
 	}
-
 }

@@ -18,7 +18,7 @@ class UserCreationService
 
 	use SingletonTrait;
 
-	public function createRequester(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
+	public function createRequester(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
 	{
 
 		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
@@ -26,7 +26,7 @@ class UserCreationService
 			$date_of_birth = $date_of_birth->format('Y-m-d');
 		}
 
-		$user = $this->create($username, $password, $email, $image, $date_of_birth, $ein, User::ROLE_REQUESTER);
+		$user = $this->create($username, $password, $email, $image, $date_of_birth, $ein, $gender, User::ROLE_REQUESTER);
 
 		$requester = new Requester();
 		$requester->user_id = $user->id;
@@ -39,7 +39,7 @@ class UserCreationService
 		$requester->save();
 	}
 
-	public function createWarehouseStaff(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
+	public function createWarehouseStaff(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
 	{
 
 		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
@@ -47,7 +47,7 @@ class UserCreationService
 			$date_of_birth = $date_of_birth->format('Y-m-d');
 		}
 
-		$user = $this->create($username, $password, $email, $image, $date_of_birth, $ein, User::ROLE_WAREHOUSE_STAFF);
+		$user = $this->create($username, $password, $email, $image, $date_of_birth, $ein, $gender, User::ROLE_WAREHOUSE_STAFF);
 
 		$warehouse_staff = new WarehouseStaff();
 		$warehouse_staff->user_id = $user->id;
@@ -60,7 +60,7 @@ class UserCreationService
 		$warehouse_staff->save();
 	}
  
-	public function createAdmin(string $username, string $email, string $password, ?string $imagePath = null, string $date_of_birth, string $ein) : void
+	public function createAdmin(string $username, string $email, string $password, ?string $imagePath = null, string $date_of_birth, string $ein, string $gender) : void
 	{
 
 		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
@@ -68,7 +68,7 @@ class UserCreationService
             $date_of_birth = $date_of_birth->format('Y-m-d');
         }
 
-		$user = $this->create($username, $password, $email, User::ROLE_ADMIN, $imagePath, $date_of_birth, $ein);
+		$user = $this->create($username, $password, $email, $imagePath, $date_of_birth, $ein, $gender, User::ROLE_ADMIN);
 
 		if ($imagePath !== null && file_exists($imagePath)) {
 			$image = new UploadedFile($imagePath, basename($imagePath));
@@ -81,7 +81,7 @@ class UserCreationService
 		$user->save();
 	}
 
-	private function create(string $username, string $password, string $email, string $role, ?string $image = null, string $date_of_birth, string $ein) : User
+	private function create(string $username, string $password, string $email, string $role, ?string $image = null, string $date_of_birth, string $ein, string $gender) : User
 	{
 		$user = new User();
 		$user->name = $username;
@@ -90,20 +90,21 @@ class UserCreationService
 		$user->role = $role;
 		$user->image = 'default.jpg';
 		$user->date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
-		$user->ein = $ein; //gender belum
+		$user->ein = $ein;
+		$user->gender = $gender;
 
 		$user->save();
 		return $user;
 	}
 
-	public function updateRequester(Requester|int $requester, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
+	public function updateRequester(Requester|int $requester, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
 	{
 		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
         if ($date_of_birth !== false) {
             $date_of_birth = $date_of_birth->format('Y-m-d');
         }
 
-		$user = $this->update($requester, $username, $email, $password, User::ROLE_REQUESTER, $image, $date_of_birth, $ein);
+		$user = $this->update($requester, $username, $email, $password, User::ROLE_REQUESTER, $image, $date_of_birth, $ein, $gender);
 
 		Requester::query()->find($requester instanceof Requester ? $requester->user_id : $requester)
 			->update([
@@ -111,14 +112,14 @@ class UserCreationService
 			]);
 	}
 
-	public function updateWarehouseStaff(WarehouseStaff|int $warehouse_staff, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein) : void
+	public function updateWarehouseStaff(WarehouseStaff|int $warehouse_staff, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
 	{
 		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
         if ($date_of_birth !== false) {
             $date_of_birth = $date_of_birth->format('Y-m-d');
         }
 
-		$user = $this->update($warehouse_staff, $username, $email, $password, User::ROLE_WAREHOUSE_STAFF, $image, $date_of_birth, $ein);
+		$user = $this->update($warehouse_staff, $username, $email, $password, User::ROLE_WAREHOUSE_STAFF, $image, $date_of_birth, $ein, $gender);
 
 		WarehouseStaff::query()->find($warehouse_staff instanceof WarehouseStaff ? $warehouse_staff->user_id : $warehouse_staff)
 			->update([
@@ -126,15 +127,16 @@ class UserCreationService
 			]);
 	}
 
-	private function update(User|int $user, string $username, string $email, string $password, string $role, ?UploadedFile $image, string $date_of_birth, string $ein) : User
+	private function update(User|int $user, string $username, string $email, string $password, string $role, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : User
 	{
 		$update = [
 			'name' => $username,
             'email' => $email,
 			'role' => $role,
-			'image' => $image, //idk kalau image gni apa ngga
+			'image' => $image, //idk bner gni apa ngga
 			'date_of_birth' => $date_of_birth,
-			'ein' => $ein
+			'ein' => $ein,
+			'gender' => $gender
 		];
 		if($password !== "") {
 			$update['password'] = Hash::make($password);

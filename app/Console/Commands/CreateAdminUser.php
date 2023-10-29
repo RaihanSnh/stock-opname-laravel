@@ -34,11 +34,12 @@ class CreateAdminUser extends Command
         $email = $this->ask('Admin Email');
 		$password = $this->secret('Admin Password');
 		$imagePath = $this->ask('Path to admin image (optional)');
-		$date_of_birth = $this->ask('Date of Birth');
-		//gender ama ein 
+		$date_of_birth = $this->ask('Date of Birth');//TODO: Format d-m-y
+		$ein = $this->ask('otomatis ini nanti');//gender ama ein
+		$gender = $this->choice('gender', ['Male', 'Female'], 'Please choose your gender');
 
 		$this->info('Creating admin user...');
-		UserCreationService::getInstance()->createAdmin($username, $email, $password, $imagePath, $date_of_birth);
+		UserCreationService::getInstance()->createAdmin($username, $email, $password, $imagePath, $date_of_birth, $ein, $gender);
 		$this->info('Admin user created');
 
 
