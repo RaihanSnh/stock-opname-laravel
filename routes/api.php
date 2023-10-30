@@ -38,7 +38,7 @@ Route::prefix('/admin')
         Route::get('/', [HomeController::class, 'admin']);
         //User
         Route::get('/user', [HomeController::class, 'user']);
-        Route::post('/user', [UserManagement::class, 'createUser']);
+        Route::post('/user', [UserManagement::class, 'create']);
         Route::get('/user/{id}', [UserManagement::class, 'view']);
         Route::post('/user/update/{id}', [UserManagement::class, 'update']);
         Route::delete('/user/delete/{id}', [UserManagement::class, 'delete']);
