@@ -40,7 +40,8 @@ Route::prefix('/admin')
         Route::get('/user', [HomeController::class, 'user']);
         Route::post('/user', [UserManagement::class, 'createUser']);
         Route::get('/user/{id}', [UserManagement::class, 'view']);
-        Route::post('/user', [UserManagement::class, 'createUser']);
+        Route::post('/user/update/{id}', [UserManagement::class, 'update']);
+        Route::delete('/user/delete/{id}', [UserManagement::class, 'delete']);
         // Unit
         Route::get('/unit', [UnitController::class, 'unit']);
         Route::post('/unit', [UnitController::class, 'create']);

@@ -52,41 +52,44 @@ class UserCreationService
         }
     }
 
-	public function updateUser(WarehouseStaff|int $warehouse_staff, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
-	{
-		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
-        if ($date_of_birth !== false) {
-            $date_of_birth = $date_of_birth->format('Y-m-d');
-        }
+	public function update(string $id, string $name, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender, string $role) {
+		$user = User::find($id);
+	
+		if ($user instanceof User) {
+			
+			$user->name = $name;
+			$user->email = $email;
+			$user->ein = $ein;
+			$user->gender = $gender;
+			$user->date_of_birth = $date_of_birth;
+			$user->role = $role;
 
-		$user = $this->update($warehouse_staff, $username, $email, $password, User::ROLE_WAREHOUSE_STAFF, $image, $date_of_birth, $ein, $gender);
+			if ($password !== "") {
+				$user->password = Hash::make($password);
+			}
+			
+			if ($image !== null) {
+				$fileName = $this->processImage($user, $image, 'images/user');
+				if ($fileName !== null) {
+					$user->image = $fileName;
+				}
+			}
 
-		WarehouseStaff::query()->find($warehouse_staff instanceof WarehouseStaff ? $warehouse_staff->user_id : $warehouse_staff)
-			->update([
-				'user_id' => $user->id
-			]);
+			$user->save();
+		}
 	}
 
-	private function update(User|int $user, string $username, string $email, string $password, string $role, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : User
-	{
-		$update = [
-			'name' => $username,
-            'email' => $email,
-			'role' => $role,
-			'image' => $image, //idk bner gni apa ngga
-			'date_of_birth' => $date_of_birth,
-			'ein' => $ein,
-			'gender' => $gender
-		];
-		if($password !== "") {
-			$update['password'] = Hash::make($password);
+	public function delete(string $id) {
+		$user = User::find($id);
+
+		if ($user instanceof User) {
+        	$fileName = $user->image;
+
+			if ($fileName !== 'default.jpg') {
+				$image_path = public_path('images/user/'.$fileName);
+				unlink($image_path);
+			}
+			$user->delete();
 		}
-		User::query()->find($user instanceof User ? $user->id : $user)->update($update);
-		if(!$user instanceof User) {
-			/** @var User $ret */
-			$ret = User::query()->find($user);
-			return $ret;
-		}
-		return $user;
 	}
 }
