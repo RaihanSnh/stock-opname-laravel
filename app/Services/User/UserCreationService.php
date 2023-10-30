@@ -52,7 +52,7 @@ class UserCreationService
         }
     }
 
-	public function updateWarehouseStaff(WarehouseStaff|int $warehouse_staff, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
+	public function updateUser(WarehouseStaff|int $warehouse_staff, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
 	{
 		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
         if ($date_of_birth !== false) {

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\UserCreationController;
+use App\Http\Controllers\Admin\UserManagement;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -37,7 +38,9 @@ Route::prefix('/admin')
         Route::get('/', [HomeController::class, 'admin']);
         //User
         Route::get('/user', [HomeController::class, 'user']);
-        Route::post('/user', [UserCreationController::class, 'createUser']);
+        Route::post('/user', [UserManagement::class, 'createUser']);
+        Route::get('/user/{id}', [UserManagement::class, 'view']);
+        Route::post('/user', [UserManagement::class, 'createUser']);
         // Unit
         Route::get('/unit', [UnitController::class, 'unit']);
         Route::post('/unit', [UnitController::class, 'create']);
