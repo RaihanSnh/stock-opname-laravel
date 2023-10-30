@@ -61,41 +61,50 @@ class UserCreationService
 	}
  
 	public function createAdmin(string $username, string $email, string $password, ?string $imagePath = null, string $date_of_birth, string $ein, string $gender) : void
-	{
+{
+    $date_of_birth = \DateTime::createFromFormat('d-m-Y', $date_of_birth);
+    if ($date_of_birth !== false) {
+        $date_of_birth = $date_of_birth->format('d-m-Y');
+    }
 
-		$date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
-        if ($date_of_birth !== false) {
-            $date_of_birth = $date_of_birth->format('Y-m-d');
-        }
+    // Check if image file exists and set image path or default image
+    if ($imagePath === null || trim($imagePath) === '') {
+        $imagePath = 'default.jpg'; 
+    } else {
+        // Extract the filename from the path
+        $imagePath = basename($imagePath);
+    }
 
-		$user = $this->create($username, $password, $email, $imagePath, $date_of_birth, $ein, $gender, User::ROLE_ADMIN);
+    $user = $this->create($username, $password, $email, User::ROLE_ADMIN, $imagePath, $date_of_birth, $ein, $gender);
 
-		if ($imagePath !== null && file_exists($imagePath)) {
-			$image = new UploadedFile($imagePath, basename($imagePath));
-			$fileName = Str::random(16) . '.' . $image->extension();
-			$image->move(public_path('images/admin'), $fileName);
-			$user->image = $fileName;
-		} else {
-			$user->image = 'default.jpg'; 
-		}
-		$user->save();
-	}
+    $user->save();
+}
+
+
 
 	private function create(string $username, string $password, string $email, string $role, ?string $image = null, string $date_of_birth, string $ein, string $gender) : User
-	{
-		$user = new User();
-		$user->name = $username;
-		$user->email = $email;
-		$user->setPassword($password);
-		$user->role = $role;
-		$user->image = 'default.jpg';
-		$user->date_of_birth = \DateTime::createFromFormat('Y-m-d', $date_of_birth);
-		$user->ein = $ein;
-		$user->gender = $gender;
+{
+    $user = new User();
+    $user->name = $username;
+    $user->email = $email;
+    $user->setPassword($password);
+    $user->role = $role;
 
-		$user->save();
-		return $user;
-	}
+    // Only set to 'default.jpg' if no image is provided
+    if ($image === null) {
+        $user->image = 'default.jpg';
+    } else {
+        $user->image = $image;
+    }
+
+    $user->date_of_birth = \DateTime::createFromFormat('d-m-Y', $date_of_birth);
+    $user->ein = $ein;
+    $user->gender = $gender;
+
+    $user->save();
+    return $user;
+}
+
 
 	public function updateRequester(Requester|int $requester, string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender) : void
 	{
