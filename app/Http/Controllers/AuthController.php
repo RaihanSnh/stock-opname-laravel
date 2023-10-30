@@ -42,8 +42,8 @@ class AuthController extends Controller
     }
 
     public function getUser() {
-        return response()->json([
-            'user' => auth()->user()
-        ], Response::HTTP_OK);
+        $user = auth()->user();
+        $user->image = asset('images/'.$user->role.'/' . $user->image);
+        return response()->json(['user' => $user], Response::HTTP_OK);
     }
 }

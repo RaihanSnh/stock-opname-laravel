@@ -8,13 +8,8 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function admin() {
-        Item::all();
-        return response()->json(['message' => 'Atmin']);
-    }
-
     public function user() {
-        $user = User::all();
+        $user = User::all(); 
         return response()->json($user);
     }
 }

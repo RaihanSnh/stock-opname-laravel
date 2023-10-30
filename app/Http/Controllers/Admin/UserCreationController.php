@@ -7,83 +7,33 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserCreationService;
 use Illuminate\Http\Request;
-use function back;
+use Illuminate\Http\Response;
 
 class UserCreationController extends Controller{
 
-	public function createAdmin(Request $request) {
+	public function createUser(Request $request) {
 		$request->validate([
-			'username' => 'required|regex:/^[a-zA-Z\s]*$/',
-            'email' => 'required|regex:/^[a-zA-Z\s]*$/',
+			'ein' => 'required',
+			'name' => 'required|regex:/^[a-zA-Z\s]*$/',
+            'email' => 'string',
 			'password' => 'required',
-			'image' => 'nullable|mimes:png,jpg',
-			'date_of_birth' => 'required',//ganti lg nnti
-			'ein' => 'required',//TODO : pikirin ein d-o-b sama gender
-			'gender' => 'required'
+			'dob' => 'required',
+			'gender' => 'required',
+			'role' => 'required',
+			'image' => 'nullable|mimes:png,jpg'
 		]);
 
-		$username = $request->post('username');
-        $email = $request->post('email');
-		$password = $request->post('password');
-		$image = $request->post('image');
-		$date_of_birth = $request->post('date_of_birth');
 		$ein = $request->post('ein');
-		$gender = $request->post('gender');
+        $username = $request->post('name');
+        $email = $request->post('email');
+        $password = $request->post('password');
+        $date_of_birth = $request->post('dob');
+        $gender = $request->post('gender');
+        $image = $request->file('image');
+        $role = $request->post('role');
 
-		UserCreationService::getInstance()->createAdmin($username, $email, $password, $image, $date_of_birth, $ein, $gender);
+		UserCreationService::getInstance()->createUser($username, $email, $password, $image, $date_of_birth, $ein, $gender, $role);
 
-		$request->session()->flash('message', 'Admin created.');
-		return back();
-	}
-
-	public function createWarehouseStaff(Request $request) {
-		$request->validate([
-			'username' => 'required|regex:/^[a-zA-Z\s]*$/',
-            'email' => 'required|regex:/^[a-zA-Z\s]*$/',
-			'password' => 'required',
-			'image' => 'nullable|mimes:png,jpg',
-			'date_of_birth' => 'required',
-			'ein' => 'required',
-			'gender' => 'required'
-		]);
-
-		UserCreationService::getInstance()->createWarehouseStaff(
-			$request->post('username'),
-            $request->post('email'),
-			$request->post('password'),
-			$request->file('image'),
-			$request->post('date_of_birth'),
-			$request->post('ein'),
-			$request->post('gender')
-
-		);
-
-		$request->session()->flash('message', 'Warehouse Staff created.');
-		return back();
-	}
-
-	public function createRequester(Request $request) {
-		$request->validate([
-			'username' => 'required|regex:/^[a-zA-Z\s]*$/',
-            'email' => 'required|regex:/^[a-zA-Z\s]*$/',
-			'password' => 'required',
-			'image' => 'nullable|mimes:png,jpg',
-			'date_of_birth' => 'required',
-			'ein' => 'required',
-			'gender' => 'required'
-		]);
-
-		UserCreationService::getInstance()->createRequester(
-			$request->post('username'),
-            $request->post('email'),
-			$request->post('password'),
-			$request->file('image'),
-			$request->post('date_of_birth'),
-			$request->post('ein'),
-			$request->post('gender')
-		);
-
-		$request->session()->flash('message', 'Requester created.');
-		return back();
+		return response()->json(['message' => 'User created.'], Response::HTTP_CREATED);
 	}
 }

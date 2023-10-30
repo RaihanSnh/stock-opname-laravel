@@ -9,35 +9,11 @@ use App\Models\Item;
 use App\Models\Report;
 use App\Services\Admin\ItemService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 use function back;
 
 class ItemController{
-
-	// public function create(Request $request) {
-	// 	$request->validate([
-	// 		'name' => 'required|string',
-	// 		'description' => 'required|string',
-	// 		'series' => 'required|string',
-	// 		'total' => 'required|integer',
-	// 		'image' => 'required|mimes:png,jpg',
-	// 	]);
-
-	// 	$no = 1;
-	// 	$code = 'ABC' . str_pad($no, 3, '0', STR_PAD_LEFT);
-
-	// 	ItemService::getInstance()->create(
-	// 		$code,
-	// 		$request->post('name'),
-	// 		(int) $request->get('warehouse_id'),
-	// 		$request->post('description'),
-	// 		$request->post('series'),
-	// 		$request->post('total'),
-	// 		$request->post('image'),
-	// 		(int) $request->get('detail_item_id'),
-	// 	);
-	// 	$request->session()->flash('message', 'Item added');
-	// 	return back();
-	// }
 
 	public function create(Request $request) {
 		$request->validate([
@@ -60,8 +36,8 @@ class ItemController{
 		];
 
 		ItemService::getInstance()->create($data);
-		$request->session()->flash('message', 'Item added');
-		return back();
+
+		return response()->json(['message' => 'Item created.'], Response::HTTP_CREATED);
 	}
 
 	public function update(Item $item, Request $request) {
