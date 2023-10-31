@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use App\Services\User\UserCreationService;
 use Illuminate\Console\Command;
+use Illuminate\Http\UploadedFile;
 
 class CreateAdminUser extends Command
 {
@@ -34,38 +35,35 @@ class CreateAdminUser extends Command
 		$username = $this->ask('Admin Username');
         $email = $this->ask('Admin Email');
 		$password = $this->secret('Admin Password');
-		$imagePath = $this->ask('Path to admin image (optional)');
-		
+	
         // Format date of birth menjadi Dd-Mm-yyyy
-        $date_of_birth = \DateTime::createFromFormat('d-m-Y', $this->ask('Date of Birth'));
+        $date_of_birth_input = \DateTime::createFromFormat('d-m-Y', $this->ask('Date of Birth'));
 
-		if ($date_of_birth === false) {
-			$this->error('Invalid date format. Please use "d-m-Y".');
-			return Command::FAILURE;
-		}
-		
-
+if ($date_of_birth_input === false) {
+    $this->error('Invalid date format. Please use "d-m-Y".');
+    return Command::FAILURE;
+}
+	
 		// Gender choice
         $gender = $this->choice('gender', ['1' => 'Male', '2' => 'Female'], 'Please choose your gender');
 
         // Format EIN
         $ein = sprintf('%s-%s-%s-%s-1-%03d',
-            $date_of_birth->format('Y'),
-            $date_of_birth->format('m'),
-            $date_of_birth->format('d'),
+            $date_of_birth_input->format('Y'),
+            $date_of_birth_input->format('m'),
+            $date_of_birth_input->format('d'),
             $gender === 'Male' ? '1' : '2',
             User::count() + 1
         );
 
-		$date_of_birth = $date_of_birth->format('d-m-Y');
+		$date_of_birth = $date_of_birth_input->format('Y-m-d');
+
+		$image = 'default.png';
 
 		$this->info('Creating admin user...');
-		
-        UserCreationService::getInstance()->createAdmin($username, $email, $password, $imagePath, $date_of_birth, $ein, $gender);
-		
+		UserCreationService::getInstance()->create($username, $email, $password, $image, $date_of_birth, $ein, $gender, 'admin');		
         $this->info('Admin user created');
 
 		return Command::SUCCESS;
 	}
 }
-

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\User;
 
-use App\Models\WarehouseStaff;
 use App\Models\User;
 use App\Traits\SingletonTrait;
 use Illuminate\Http\UploadedFile;
@@ -17,7 +16,7 @@ class UserCreationService
 
 	use SingletonTrait;
 
-	public function create(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender, string $role): void
+	public function create(string $username, string $email, string $password, $image, string $date_of_birth, string $ein, string $gender, string $role): void
 	{
 		$user = new User();
 		$user->ein = $ein;
@@ -27,26 +26,32 @@ class UserCreationService
 		$user->gender = $gender;
 		$user->date_of_birth = $date_of_birth;
 		$user->role = $role;
-		$user->image = 'default.jpg';
-
-		if ($image !== null) {
-			$fileName = $this->processImage($user, $image, 'images/user');
-			if ($fileName !== null) {
-				$user->image = $fileName;
-			}
+		if ($image instanceof UploadedFile) {
+			// Logika upload file Anda di sini
+		} else {
+			// Jika tidak, anggap itu sebagai string dan simpan langsung
+			$user->image = $image;
 		}
 
 		$user->save();
 	}
 
     private function processImage(User $user, ?UploadedFile $image, string $destination): void
-    {
-        if ($image !== null) {
-            $fileName = Str::random(16) . '.' . $image->extension();
+{
+    if ($image !== null) {
+        $fileName = Str::random(16) . '.' . $image->extension();
+        try {
             $image->move(public_path($destination), $fileName);
             $user->image = $fileName;
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan, tetap simpan pengguna dengan gambar default
+            $user->image = 'default.png';
         }
     }
+}
+
+
+	
 
 	public function update(string $id, string $name, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender, string $role) {
 		$user = User::find($id);
