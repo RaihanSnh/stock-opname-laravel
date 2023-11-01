@@ -61,7 +61,7 @@ if ($date_of_birth_input === false) {
 		$image = 'default.png';
 
 		$this->info('Creating admin user...');
-		UserCreationService::getInstance()->create($username, $email, $password, $image, $date_of_birth, $ein, $gender, 'admin');		
+		UserCreationService::getInstance()->createUser($username, $email, $password, $image, $date_of_birth, $ein, $gender, 'admin');		
         $this->info('Admin user created');
 
 		return Command::SUCCESS;

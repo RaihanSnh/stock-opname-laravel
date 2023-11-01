@@ -16,11 +16,14 @@ class UserCreationService
 
 	use SingletonTrait;
 
-	public function createUser(string $username, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender, string $role): void
+	public function createUser(string $username, string $email, string $password, $image, string $date_of_birth, string $ein, string $gender, string $role): void
     {
         $user = $this->create($username, $email, $password, $date_of_birth, $ein, $gender, $role);
-		$this->processImage($user, $image, 'images/user');
-
+		if ($image instanceof UploadedFile) {
+			$this->processImage($user, $image, 'images/user');
+		} else {
+			$user->image = asset('images/user/' .  $image);
+		}
         $user->save();
     }
 
@@ -42,14 +45,17 @@ class UserCreationService
     }
 
     private function processImage(User $user, ?UploadedFile $image, string $destination): void
-	{
-		if ($image !== null) {
-			
-			$fileName = Str::random(16) . '.' . $image->extension();
-			$image->move(public_path($destination), $fileName);
-			$user->image = $fileName;
-		}
-	}
+{
+    if ($image !== null) {
+        $fileName = Str::random(16) . '.' . $image->extension();
+        try {
+            $image->move(public_path($destination), $fileName);
+            $user->image = $fileName;
+        } catch (\Exception $e) {
+            $user->image = 'default.png';
+        }
+    }
+}
 
 	public function update(string $id, string $name, string $email, string $password, ?UploadedFile $image, string $date_of_birth, string $ein, string $gender, string $role) {
 		$user = User::find($id);

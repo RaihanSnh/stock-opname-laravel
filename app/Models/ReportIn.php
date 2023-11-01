@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $item_id
- * @property string vendor
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -31,8 +30,7 @@ class ReportIn extends Model
 	];
 
 	protected $fillable = [
-		'item_id',
-		'vendor'
+		'item_id'
 	];
 
 	public function items()

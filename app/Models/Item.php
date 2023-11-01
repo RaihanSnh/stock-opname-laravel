@@ -16,14 +16,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $warehouse_id
  * @property string $name
  * @property string $description
- * @property string total
+ * @property string $total
  * @property string $series
  * @property string $image
+ * @property string $vendor
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $category_id
  * @property int $unit_id
- * @property string code
+ * @property string $code
  *
  * @property Warehouse $warehouse
  * @property Category $category
@@ -50,7 +51,8 @@ class Item extends Model
 		'series',
 		'total',
 		'image',
-		'code'
+		'code',
+		'vendor'
 	];
 
 	public function warehouse()

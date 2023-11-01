@@ -10,22 +10,21 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Form
+ * Request Form
  *
  * @property int $id
  * @property int $requester_id
  * @property int $item_id
- * @property string $reason
+ * @property string $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property string $total
  *
  * @property Item $items
  * @property Requester $requester
  *
  * @package App\Models
  */
-class Form extends Model
+class Request extends Model
 {
 	protected $table = 'form';
 
@@ -37,8 +36,7 @@ class Form extends Model
 	protected $fillable = [
 		'requester_id',
 		'item_id',
-		'reason',
-		'total'
+		'status'
 	];
 
 	public function items()
