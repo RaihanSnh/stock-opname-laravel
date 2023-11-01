@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\DetailItem;
 use App\Models\Item;
-use App\Models\Report;
 use App\Services\Admin\ItemService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,28 +14,27 @@ use function back;
 class ItemController{
 
 	public function create(Request $request) {
-		$request->validate([
-			'name' => 'required',
-			'description' => 'required',
-			'series' => 'required',
-			'total' => 'required',
-			'image' => 'required|mimes:png,jpg',
-		]);
+		
+		$code = $request->post('code');
+		$name = $request->post('name');
+		$description = $request->post('description');
+		$series = $request->post('series');
+		$total = $request->post('total');
+		$image = $request->file('image');
+		$category_id = $request->post('category_id');
+		$unit_id = $request->post('unit_id');
+		$warehouse_id = $request->post('warehouse_id');
+		$vendor = $request->post('vendor');
 
-		$data = [
-			'code' => $request->input('code'),
-			'name' => $request->input('name'),
-			'description' => $request->input('description'),
-			'series' => $request->input('series'),
-			'total' => $request->input('total'),
-			'image' => $request->input('image'),
-			'idcategory' => $request->input('idcategory'),
-			'idunit' => $request->input('idunit'),
-		];
+		ItemService::getInstance()->createItem($code, $name, $description, $series, $total, $vendor, $image, (int) $warehouse_id, (int) $category_id, (int) $unit_id);
 
-		ItemService::getInstance()->create($data);
+		return response()->json(['message' => 'Item created.', 'request' => $request->all()], Response::HTTP_CREATED);
+	}
 
-		return response()->json(['message' => 'Item created.'], Response::HTTP_CREATED);
+	public function view($id) {
+		$item = Item::find($id);
+
+		return response()->json(['item' => $item]);
 	}
 
 	public function update(Item $item, Request $request) {
@@ -63,11 +60,11 @@ class ItemController{
 		return back();
 	}
 
-	public function delete(Item $item, Request $request) {
-		$item->delete();
-
-		$request->session()->flash('message', 'Item deleted');
-		return back();
+	public function delete($id) {
+	
+		ItemService::getInstance()->delete($id);
+	
+		return response()->json(['message' => 'User deleted.'], Response::HTTP_OK);
 	}
 
 	public function give(Item $item, Request $request) {

@@ -33,7 +33,7 @@ class UserManagement extends Controller{
         $image = $request->file('image');
         $role = $request->post('role');
 
-		UserCreationService::getInstance()->create($username, $email, $password, $image, $date_of_birth, $ein, $gender, $role);
+		UserCreationService::getInstance()->createUser($username, $email, $password, $image, $date_of_birth, $ein, $gender, $role);
 
 		return response()->json(['message' => 'User created.'], Response::HTTP_CREATED);
 	}

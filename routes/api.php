@@ -61,6 +61,7 @@ Route::prefix('/admin')
         Route::post('/warehouse/update/{id}', [WarehouseController::class, 'update']);
         Route::delete('/warehouse/delete/{id}', [WarehouseController::class, 'delete']);
         // Item
+        Route::get('/item', [HomeController::class, 'item']);
         Route::post('/item', [ItemController::class, 'create']);
         Route::get('/item/{id}', [ItemController::class, 'view']);
         Route::post('/item/update/{id}', [ItemController::class, 'update']);
