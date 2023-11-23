@@ -26,22 +26,22 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Request extends Model
 {
-	protected $table = 'form';
+	protected $table = 'request';
 
 	protected $casts = [
-		'requester_id' => 'int',
-		'item_id' => 'int'
+		'form_id' 		=> 'int',
+		'requester_id' 	=> 'int'
 	];
 
 	protected $fillable = [
 		'requester_id',
-		'item_id',
+		'form_id',
 		'status'
 	];
 
-	public function items()
+	public function form()
 	{
-		return $this->belongsTo(Item::class);
+		return $this->belongsTo(Form::class);
 	}
 
 	public function requester()

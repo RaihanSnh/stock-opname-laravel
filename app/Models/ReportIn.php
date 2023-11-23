@@ -35,6 +35,6 @@ class ReportIn extends Model
 
 	public function items()
 	{
-		return $this->belongsTo(Item::class);
+		return $this->belongsTo(DetailItem::class, 'item_id');
 	}
 }

@@ -21,7 +21,8 @@ class UserManagement extends Controller{
 			'dob' => 'required',
 			'gender' => 'required',
 			'role' => 'required',
-			'image' => 'nullable|mimes:png,jpg'
+			'image' => 'nullable|mimes:png,jpg',
+			'warehouse_id' => 'required'
 		]);
 
 		$ein = $request->post('ein');
@@ -32,8 +33,9 @@ class UserManagement extends Controller{
         $gender = $request->post('gender');
         $image = $request->file('image');
         $role = $request->post('role');
+        $warehouse_id = $request->post('warehouse_id');
 
-		UserCreationService::getInstance()->createUser($username, $email, $password, $image, $date_of_birth, $ein, $gender, $role);
+		UserCreationService::getInstance()->createUser($username, $email, $password, $image, $date_of_birth, $ein, $gender, $role, (int) $warehouse_id);
 
 		return response()->json(['message' => 'User created.'], Response::HTTP_CREATED);
 	}

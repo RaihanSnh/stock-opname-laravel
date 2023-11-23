@@ -26,10 +26,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $date_of_birth
  * @property string $ein
  * @property string $gender
+ * @property int $warehouse_id
  *
- * @property Requester $requester
- * @property WarehouseStaff $warehouse_staff
- *
+ * @property Warehouse $warehouse
  * @package App\Models
  */
 class User extends Authenticatable
@@ -48,6 +47,10 @@ class User extends Authenticatable
 
 	protected $table = 'users';
 
+	protected $casts = [
+		'warehouse_id' => 'int',
+	];
+
 	protected $hidden = [
 		'password'
 	];
@@ -60,9 +63,15 @@ class User extends Authenticatable
 		'image',
 		'date_of_birth',
 		'ein',
-		'gender'
+		'gender',
+		'warehouse_id'
 
 	];
+
+	public function warehouse()
+	{
+		return $this->belongsTo(Warehouse::class);
+	}
 
 	public function requester()
 	{

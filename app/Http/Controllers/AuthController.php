@@ -43,6 +43,7 @@ class AuthController extends Controller
 
     public function getUser() {
         $user = auth()->user();
+        $user->load('warehouse');
         $user->image = asset('images/'.'user/' . $user->image);
         return response()->json(['user' => $user], Response::HTTP_OK);
     }

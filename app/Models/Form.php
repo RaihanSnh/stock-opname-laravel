@@ -13,15 +13,15 @@ use Illuminate\Database\Eloquent\Model;
  * Class Form
  *
  * @property int $id
- * @property int $requester_id
+ * @property int $user_id
  * @property int $item_id
  * @property string $reason
+ * @property string $total
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property string $total
  *
  * @property Item $items
- * @property Requester $requester
+ * @property User $User
  *
  * @package App\Models
  */
@@ -30,12 +30,12 @@ class Form extends Model
 	protected $table = 'form';
 
 	protected $casts = [
-		'requester_id' => 'int',
+		'user_id' => 'int',
 		'item_id' => 'int'
 	];
 
 	protected $fillable = [
-		'requester_id',
+		'user_id',
 		'item_id',
 		'reason',
 		'total'
@@ -43,11 +43,11 @@ class Form extends Model
 
 	public function items()
 	{
-		return $this->belongsTo(Item::class);
+		return $this->belongsTo(DetailItem::class, 'item_id');
 	}
 
-	public function requester()
+	public function user()
 	{
-		return $this->belongsTo(Requester::class, 'requester_id', 'user_id');
+		return $this->belongsTo(User::class);
 	}
 }
